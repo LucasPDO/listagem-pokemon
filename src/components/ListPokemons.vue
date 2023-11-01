@@ -5,7 +5,7 @@
       <tr>
        <td>Nome</td> 
       </tr>
-      <tr v-for="item in pokemons" :key="item" >
+      <tr v-for="item in ResultFormated" :key="item ">
        {{  item }}
       </tr>      
     
@@ -20,18 +20,22 @@ export default {
 
  data() {
   return {
-    pokemons: ''
+    pokemons: []
   }
   
  },
-
+ computed: {
+    ResultFormated() {
+      return this.pokemons
+         .map(item => item.name);
+    }
+ },
 methods: {
   listarPokemon() {
     axios 
     .get('https://pokeapi.co/api/v2/pokemon?limit=15&offset=0')
     .then(response => {
-      this.pokemons = response.data.results
-      .map(item => item.name);
+      this.pokemons = response.data.results;
     })
     .catch(error => {
       console.error(error);
@@ -40,8 +44,11 @@ methods: {
     
   } 
 },
-created() {
-  this.listarPokemon();
+created() {  
+  if (!this.pokemons) {
+    return;
+  }
+    this.listarPokemon();
 }
 }
 </script>
